@@ -45,8 +45,9 @@ public:
         switch (type) {
         case user_data_type::task_info_ptr: {
           auto ti = reinterpret_cast<task_info *>(user_data);
+          std::cout << "ti->res:" << cqe->res << std::endl;
           ti->res = cqe->res;
-          ti->handle.resume();
+          forward_task(ti->handle);
           break;
         }
         }
@@ -56,6 +57,8 @@ public:
   }
 
   io_uring_sqe *get_sqe() { return io_uring_get_sqe(&uring); }
+
+  void forward_task(std::coroutine_handle<> h) { handles_.emplace(h); }
 
   void co_spawn(task<> t) { handles_.emplace(t.get_handle()); }
 
@@ -75,6 +78,7 @@ private:
   std::queue<std::coroutine_handle<>> handles_;
 };
 
+void co_spawn(task<> t);
 } // namespace coroutine
 
 #endif // CONTEXT_HPP
