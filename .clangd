@@ -1,0 +1,7 @@
+CompileFlags:
+  Add:[-fcorotines]
+InlayHints:
+  Designator: Yes
+  Enabled: Yes
+  ParameterNames: Yes
+  DeducedTypes: Yes

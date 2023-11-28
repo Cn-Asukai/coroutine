@@ -11,11 +11,12 @@
 namespace coroutine {
 class socket {
 public:
-    socket(int fd):fd_(fd) {}
+    explicit socket(int fd):fd_(fd) {}
 
     detail::co_recv recv(std::span<char> buf) const;
     detail::co_send send(std::span<char> buf, size_t len) const;
-private:
+    detail::co_close close() const;
+    private:
     int fd_;
 };
 }

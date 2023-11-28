@@ -1,0 +1,38 @@
+[
+{
+  "directory": "/home/asukai/CLionProjects/coroutine/cmake-build-debug/src",
+  "command": "/usr/bin/c++   -g -std=c++20 -fdiagnostics-color=always -o CMakeFiles/continue.dir/main.cpp.o -c /home/asukai/CLionProjects/coroutine/src/main.cpp",
+  "file": "/home/asukai/CLionProjects/coroutine/src/main.cpp",
+  "output": "src/CMakeFiles/continue.dir/main.cpp.o"
+},
+{
+  "directory": "/home/asukai/CLionProjects/coroutine/cmake-build-debug/src",
+  "command": "/usr/bin/c++   -g -std=c++20 -fdiagnostics-color=always -o CMakeFiles/continue.dir/includes/acceptor.cpp.o -c /home/asukai/CLionProjects/coroutine/src/includes/acceptor.cpp",
+  "file": "/home/asukai/CLionProjects/coroutine/src/includes/acceptor.cpp",
+  "output": "src/CMakeFiles/continue.dir/includes/acceptor.cpp.o"
+},
+{
+  "directory": "/home/asukai/CLionProjects/coroutine/cmake-build-debug/src",
+  "command": "/usr/bin/c++   -g -std=c++20 -fdiagnostics-color=always -o CMakeFiles/continue.dir/includes/context.cpp.o -c /home/asukai/CLionProjects/coroutine/src/includes/context.cpp",
+  "file": "/home/asukai/CLionProjects/coroutine/src/includes/context.cpp",
+  "output": "src/CMakeFiles/continue.dir/includes/context.cpp.o"
+},
+{
+  "directory": "/home/asukai/CLionProjects/coroutine/cmake-build-debug/src",
+  "command": "/usr/bin/c++   -g -std=c++20 -fdiagnostics-color=always -o CMakeFiles/continue.dir/includes/socket.cpp.o -c /home/asukai/CLionProjects/coroutine/src/includes/socket.cpp",
+  "file": "/home/asukai/CLionProjects/coroutine/src/includes/socket.cpp",
+  "output": "src/CMakeFiles/continue.dir/includes/socket.cpp.o"
+},
+{
+  "directory": "/home/asukai/CLionProjects/coroutine/cmake-build-debug/src",
+  "command": "/usr/bin/c++   -g -std=c++20 -fdiagnostics-color=always -o CMakeFiles/continue.dir/includes/thread_meta.cpp.o -c /home/asukai/CLionProjects/coroutine/src/includes/thread_meta.cpp",
+  "file": "/home/asukai/CLionProjects/coroutine/src/includes/thread_meta.cpp",
+  "output": "src/CMakeFiles/continue.dir/includes/thread_meta.cpp.o"
+},
+{
+  "directory": "/home/asukai/CLionProjects/coroutine/cmake-build-debug/src",
+  "command": "/usr/bin/c++   -g -std=gnu++23 -fdiagnostics-color=always -o CMakeFiles/main.dir/main.cpp.o -c /home/asukai/CLionProjects/coroutine/src/main.cpp",
+  "file": "/home/asukai/CLionProjects/coroutine/src/main.cpp",
+  "output": "src/CMakeFiles/main.dir/main.cpp.o"
+}
+]

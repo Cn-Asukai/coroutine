@@ -8,21 +8,28 @@
 using namespace std;
 using namespace coroutine;
 
-task func() {
-    acceptor t{8081};
-    int fd = co_await t.accept();
-    cout << "fd:" << fd << endl;
-    coroutine::socket conn(fd);
-    vector<char> buf(1024, 0);
+task<> func() {
+  acceptor t{8081};
+  int fd = co_await t.accept();
+  cout << "fd:" << fd << endl;
+  coroutine::socket conn(fd);
+  vector<char> buf(1024, 0);
+  while (1) {
     int n = co_await conn.recv(buf);
+    if(n <= 0) {
+      co_await conn.close();
+      std::cout << "client quit!" << endl;
+      co_return;
+    }
     cout << "n:" << n << endl;
     cout << buf.data() << endl;
     n = co_await conn.send(buf, n);
     cout << "n:" << n << endl;
+  }
 }
 
 int main() {
-    context c;
-    func();
-    c.start();
+  context c;
+  c.co_spawn(func());
+  c.start();
 }

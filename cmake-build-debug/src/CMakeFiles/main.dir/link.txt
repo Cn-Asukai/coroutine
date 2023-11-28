@@ -1,1 +1,1 @@
-/home/ubuntu2004/gcc131/bin/g++ -g CMakeFiles/main.dir/main.cpp.o -o main  libcontinue.a -luring 
+/usr/bin/c++ -g CMakeFiles/main.dir/main.cpp.o -o main  libcontinue.a -luring 

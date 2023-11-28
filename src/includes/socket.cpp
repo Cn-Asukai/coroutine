@@ -3,6 +3,7 @@
 //
 
 #include "socket.hpp"
+#include "awaitable.hpp"
 
 namespace coroutine {
 detail::co_recv socket::recv(std::span<char> buf) const {
@@ -12,4 +13,8 @@ detail::co_recv socket::recv(std::span<char> buf) const {
 detail::co_send socket::send(const std::span<char> buf, const size_t len) const {
     return detail::co_send{fd_, buf, len};
 }
+
+    detail::co_close socket::close() const{
+        return detail::co_close{fd_};
+    }
 }
