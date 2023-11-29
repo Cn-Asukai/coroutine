@@ -1,6 +1,0 @@
-/home/asukai/CLionProjects/coroutine/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/asukai/CLionProjects/coroutine/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/asukai/CLionProjects/coroutine/cmake-build-debug/src/CMakeFiles/continue.dir
-/home/asukai/CLionProjects/coroutine/cmake-build-debug/src/CMakeFiles/main.dir
-/home/asukai/CLionProjects/coroutine/cmake-build-debug/src/CMakeFiles/edit_cache.dir
-/home/asukai/CLionProjects/coroutine/cmake-build-debug/src/CMakeFiles/rebuild_cache.dir

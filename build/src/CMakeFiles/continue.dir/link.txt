@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcontinue.a CMakeFiles/continue.dir/main.cpp.o CMakeFiles/continue.dir/includes/acceptor.cpp.o CMakeFiles/continue.dir/includes/context.cpp.o CMakeFiles/continue.dir/includes/socket.cpp.o CMakeFiles/continue.dir/includes/thread_meta.cpp.o
-/usr/bin/ranlib libcontinue.a
