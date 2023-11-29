@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "includes/acceptor.hpp"
@@ -64,4 +65,6 @@ int main() {
   context c;
   c.co_spawn(func());
   c.start();
+  // std::this_thread::sleep_for(2s);
+  c.join();
 }
