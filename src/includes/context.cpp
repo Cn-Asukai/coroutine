@@ -5,8 +5,5 @@
 #include "context.hpp"
 
 namespace coroutine {
-void co_spawn(task<> t) {
-    this_thread.ctx->co_spawn(std::move(t));
-  }
-}
-
+void co_spawn(task<> t) { this_thread.ctx->co_spawn(std::move(t)); }
+} // namespace coroutine

@@ -1,7 +1,7 @@
 #ifndef TASK_HPP
 #define TASK_HPP
 
-#include <assert.h>
+#include <cassert>
 #include <coroutine>
 #include <exception>
 #include <memory>

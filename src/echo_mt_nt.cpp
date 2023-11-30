@@ -1,16 +1,14 @@
-#include <algorithm>
-#include <iostream>
-#include <string>
-#include <thread>
-#include <vector>
-
 #include "includes/acceptor.hpp"
 #include "includes/context.hpp"
 #include "includes/socket.hpp"
+#include "includes/task.hpp"
+#include <iostream>
+#include <vector>
+
 using namespace std;
 using namespace coroutine;
 
-context c;
+context c, works[5];
 
 task<> echo(int fd) {
 
@@ -35,15 +33,22 @@ task<> echo(int fd) {
 
 task<> func() {
   acceptor t{8081};
+  int cur = 0;
   while (1) {
     int fd = co_await t.accept();
     cout << "fd:" << fd << endl;
-    co_spawn(echo(fd));
+    works[cur++].co_spawn(echo(fd));
+    if(cur == 5) {
+      cur = 0;
+    }
   }
 }
 
 int main() {
   c.co_spawn(func());
+  for(auto& word : works){
+    word.start();
+  }
   c.start();
   c.join();
 }
