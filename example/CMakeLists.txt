@@ -1,0 +1,10 @@
+file(GLOB SRC_LIST "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+foreach(SRC_FILE ${SRC_LIST})
+  get_filename_component(file_name ${SRC_FILE} NAME)
+  get_filename_component(file_name_we ${SRC_FILE} NAME_WE)
+  message(${file_name})
+  message(${file_name_we})
+  add_executable(${file_name_we} ${file_name})
+  target_link_libraries(${file_name_we} coroutine)
+endforeach()
+

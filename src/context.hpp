@@ -79,7 +79,6 @@ public:
       case user_data_type::task_info_ptr: {
         auto ti = reinterpret_cast<task_info *>(user_data);
 
-        std::cout << "ti->res:" << cqe->res << std::endl;
         ti->res = cqe->res;
         forward_task(ti->handle);
         break;
@@ -130,7 +129,7 @@ private:
   std::queue<std::coroutine_handle<>> handles_;
   std::jthread thread_;
   int eventfd_;
-  eventfd_t event_buf_;
+  eventfd_t event_buf_{0};
   std::queue<std::coroutine_handle<>> co_spawn_queue;
   std::queue<std::coroutine_handle<>> local_co_spawn_queue;
 };

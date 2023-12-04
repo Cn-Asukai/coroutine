@@ -6,7 +6,7 @@
 
 #include <arpa/inet.h>
 #include <asm-generic/socket.h>
-#include <assert.h>
+#include <cassert>
 #include <sys/socket.h>
 
 namespace coroutine {

@@ -5,7 +5,7 @@
 #include <cstdint>
 struct task_info {
   std::coroutine_handle<> handle;
-  int32_t res;
+  int32_t res{};
 
   uint64_t as_user_data(){
     return  static_cast<uint64_t>(reinterpret_cast<uintptr_t>(this));

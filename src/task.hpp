@@ -33,7 +33,7 @@ template <typename T> struct task_final_awaiter {
 };
 
 template <> struct task_final_awaiter<void> {
-  bool await_ready() noexcept { return false; }
+  static bool await_ready() noexcept { return false; }
 
   // 在final_suspend中，协程并不会挂起
   // 如果co_await final_suspend 如果挂起了，那么协程将自动销毁

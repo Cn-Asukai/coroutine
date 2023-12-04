@@ -23,14 +23,14 @@ struct awaitable {
                  static_cast<uint64_t>(user_data_type::task_info_ptr)));
   }
 
-  bool await_ready() { return false; }
+  static bool await_ready() { return false; }
 
   void await_suspend(std::coroutine_handle<> handle) {
     ti.handle = handle;
     io_uring_sqe_set_data(sqe, &ti);
   }
 
-  int await_resume() { return ti.res; }
+  int await_resume() const { return ti.res; }
 
   io_uring_sqe *sqe;
   task_info ti{};
