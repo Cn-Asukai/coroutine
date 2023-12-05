@@ -8,7 +8,13 @@ namespace coroutine {
 
 class request {
 public:
+  request() = default;
+
   explicit request(std::span<char> buf) {
+      parse_request(buf);
+  }
+
+  void parse_request(std::span<char> buf) {
     parser_.parse({buf.data(), buf.size()});
   }
 
