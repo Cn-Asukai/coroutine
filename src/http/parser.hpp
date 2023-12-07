@@ -29,8 +29,10 @@ public:
     }
   }
 
+  ~parser() {}
+
   llhttp_t parser_{};
-  llhttp_settings_t setting_{};
+  inline static llhttp_settings_t setting_;
 
   std::string &method_;
   std::string &url_;

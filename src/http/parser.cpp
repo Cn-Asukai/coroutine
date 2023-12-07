@@ -42,9 +42,8 @@ int on_body(llhttp_t *_parser, const char *at, size_t length) {
 }
 parser::parser(request &r)
     : method_(r.method_), url_(r.url_), version_(r.version_),
-      header_fields_(r.header_fields_), header_values_(r.header_values_)
-  ,body_(r.body_)
-   {
+      header_fields_(r.header_fields_), header_values_(r.header_values_),
+      body_(r.body_) {
   llhttp_settings_init(&setting_);
   setting_.on_url = on_url;
   setting_.on_method = on_method;

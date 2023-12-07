@@ -45,8 +45,8 @@ template <> struct task_final_awaiter<void> {
     auto &promise = h.promise();
     auto parent_coro = promise.parent_coro;
 
-    // 不需要返回值，所有协程可以直接销毁
-    // h.destroy();
+    // 不需要返回值，所以协程可以直接销毁
+    h.destroy();
 
     return parent_coro;
   }
@@ -166,9 +166,7 @@ template <> struct task_promise<void> : task_promise_base<void> {
       std::rethrow_exception(exception_ptr);
     }
   }
-      void return_void(){
-        
-      }
+  void return_void() {}
 
 private:
   inline static constexpr uintptr_t is_detached = -1ULL;
@@ -180,7 +178,6 @@ private:
 };
 
 } // namespace detail
-
 
 template <typename T = void> class task {
 public:
@@ -207,7 +204,7 @@ public:
   task &operator=(task &&rhs) noexcept {
     if (this != std::addressof(rhs)) {
       if (handle) {
-        // handle.destroy();
+        handle.destroy();
       }
       handle = rhs.handle;
       rhs.handle = nullptr;
@@ -217,7 +214,7 @@ public:
 
   ~task() {
     if (handle) {
-      // handle.destroy();
+      handle.destroy();
     }
   }
 

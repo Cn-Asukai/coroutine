@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <string>
 #include <vector>
 using namespace coroutine;
 using namespace std;
@@ -21,10 +22,14 @@ public:
 
 private:
   task<> serve() {
+    // int i = 0;
+    // while (i < 10000) {
     while (true) {
       int fd = co_await actor_.accept();
       co_spawn(session(fd));
+      // i++;
     }
+    exit(1);
   }
   task<> session(int fd) {
     coroutine::socket s(fd);
@@ -32,35 +37,29 @@ private:
     auto n = co_await s.recv(buf);
     request r;
     r.parse_request(span(buf.begin(), n));
-    cout << "url:" << r.url_ << endl;
-    cout << "version:" << r.version_ << endl;
-    cout << "method:" << r.method_ << endl;
-
-    for (int i = 0; i < r.header_fields_.size(); i++) {
-      cout << r.header_fields_[i] << ": " << r.header_values_[i] << endl;
-    }
-    cout << "body:" << r.body_ << endl;
-
     string res{};
     string file_name{r.url_.begin() + 1, r.url_.end()};
     filesystem::path p("./" + file_name);
     auto size = filesystem::file_size(p);
-    cout << "file_name:" << file_name << endl;
+    // cout << "file_name:" << file_name << endl;
     res += "HTTP/1.1 200 OK\r\n";
     res += "Content-Length: " + to_string(size) + "\r\n";
     res += "\r\n";
-    // read_file(file_name, res);
+    read_file(file_name, res);
     res += "\r\n";
-    cout << "response:" << res << endl;
     n = co_await s.send(res, res.size());
     co_await s.close();
   }
 
-  void read_file(string_view file_name, string &str) {
+  static void read_file(string_view file_name, string &str) {
     fstream f;
     f.open(string{file_name});
     assert(f.is_open());
-    f >> str;
+    string temp;
+    while (getline(f, temp)) {
+      str += temp;
+      str += "\n";
+    }
     f.close();
   }
 

@@ -47,14 +47,18 @@ public:
 
   void forward_task(std::coroutine_handle<> h) { handles_.emplace(h); }
 
-  void co_spawn(task<> t) { co_spawn_auto(std::move(t)); }
+  void co_spawn(task<> t) {
+    std::coroutine_handle<> h = t.get_handle();
+    t.detach();
+    co_spawn_auto(h);
+  }
 
   void do_work_part() {
     int n = static_cast<int>(handles_.size());
     for (int i = 0; i < n; i++) {
       std::coroutine_handle<> coroutine_handle = handles_.front();
-      handles_.pop();
       coroutine_handle.resume();
+      handles_.pop();
     }
   }
 
@@ -115,11 +119,11 @@ private:
     eventfd_write(eventfd_, 1);
   }
 
-  void co_spawn_auto(task<> t) {
+  void co_spawn_auto(std::coroutine_handle<> h) {
     if (this_thread.ctx == this || context_ready_count == 0) {
-      forward_task(t.get_handle());
+      forward_task(h);
     } else {
-      co_spawn_eventfd(t.get_handle());
+      co_spawn_eventfd(h);
     }
   }
 
