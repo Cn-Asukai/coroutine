@@ -46,7 +46,9 @@ template <> struct task_final_awaiter<void> {
     auto parent_coro = promise.parent_coro;
 
     // 不需要返回值，所以协程可以直接销毁
-    h.destroy();
+    if (promise.is_detached_flag == Promise::is_detached) {
+      // h.destroy();
+    }
 
     return parent_coro;
   }
@@ -204,7 +206,7 @@ public:
   task &operator=(task &&rhs) noexcept {
     if (this != std::addressof(rhs)) {
       if (handle) {
-        handle.destroy();
+        // handle.destroy();
       }
       handle = rhs.handle;
       rhs.handle = nullptr;
@@ -214,7 +216,7 @@ public:
 
   ~task() {
     if (handle) {
-      handle.destroy();
+      // handle.destroy();
     }
   }
 

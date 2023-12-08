@@ -4,6 +4,7 @@
 #include "task_info.hpp"
 #include "thread_meta.hpp"
 #include "user_data.hpp"
+#include <atomic>
 #include <coroutine>
 #include <cstdint>
 #include <iostream>
@@ -57,8 +58,8 @@ public:
     int n = static_cast<int>(handles_.size());
     for (int i = 0; i < n; i++) {
       std::coroutine_handle<> coroutine_handle = handles_.front();
-      coroutine_handle.resume();
       handles_.pop();
+      coroutine_handle.resume();
     }
   }
 
@@ -127,8 +128,8 @@ private:
     }
   }
 
-  inline static int context_create_count{0};
-  inline static int context_ready_count{0};
+  inline static std::atomic_int context_create_count{0};
+  inline static std::atomic_int context_ready_count{0};
   io_uring uring{};
   std::queue<std::coroutine_handle<>> handles_;
   std::jthread thread_;
