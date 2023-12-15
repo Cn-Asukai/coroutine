@@ -22,12 +22,9 @@ public:
 
 private:
   task<> serve() {
-    // int i = 0;
-    // while (i < 10000) {
     while (true) {
       int fd = co_await actor_.accept();
       co_spawn(session(fd));
-      // i++;
     }
     exit(1);
   }

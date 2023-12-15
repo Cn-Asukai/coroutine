@@ -1,12 +1,18 @@
+#include "awaitable.hpp"
 #include "context.hpp"
 #include "http/request.hpp"
 #include "net/acceptor.hpp"
 #include "net/socket.hpp"
+#include "task.hpp"
 #include <cassert>
+#include <cstddef>
+#include <cstring>
+#include <fcntl.h>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <thread>
 #include <vector>
 using namespace coroutine;
 using namespace std;
@@ -16,8 +22,9 @@ public:
 
   void start() {
     ctx_.co_spawn(serve());
-    for (auto &w : works) {
-      w.start();
+    ctx_.co_spawn(request_per_second());
+    for (auto i = 0uz; i < size(works); i++) {
+      works[i].start();
     }
     ctx_.start();
   }
@@ -34,67 +41,83 @@ private:
     int cur = 0;
     while (true) {
       int fd = co_await actor_.accept();
+      fds++;
 
+      nums[cur]++;
       works[cur++].co_spawn(session(fd));
-      if (cur == 4) {
+      if (cur == size(works)) {
         cur = 0;
       }
     }
     exit(1);
   }
   task<> session(int fd) {
+    int cur_size = 0, last_size = 0;
     coroutine::socket s(fd);
     vector<char> buf(1024, 0);
     try {
       auto n = co_await s.recv(buf);
       request r;
-      r.parse_request(span(buf.begin(), n + 1));
+      r.parse_request(span(buf.begin(), n));
       string res{};
-      // string file_name;
-      // try {
-      //   file_name = string{r.url_.begin() + 1, r.url_.end()};
-      // } catch (const std::exception &e) {
-      //   std::cerr << e.what() << '\n';
-      // }
+
       string file_name{r.url_.begin() + 1, r.url_.end()};
 
       filesystem::path p("./" + file_name);
       auto size = filesystem::file_size(p);
-      // cout << "file_name:" << file_name << endl;
+
       res += "HTTP/1.1 200 OK\r\n";
       res += "Content-Length: " + to_string(size) + "\r\n";
       res += "\r\n";
-      read_file(file_name, res);
+      co_await read_file(file_name, size, res);
       res += "\r\n";
+      cur_size = res.size();
       n = co_await s.send(res, res.size());
+      last_size = res.size();
       co_await s.close();
     } catch (const std::exception &e) {
-      cout << e.what() << endl;
-      cout << buf.data() << endl;
     }
   }
 
-  static void read_file(string_view file_name, string &str) {
-    fstream f;
-    f.open(string{file_name});
-    assert(f.is_open());
-    string temp;
-    while (getline(f, temp)) {
-      str += temp;
-      str += "\n";
+  static task<> read_file(string_view file_name, size_t size, string &str) {
+    int fd = open(file_name.data(), O_RDONLY);
+    size_t left_size = size;
+    vector<char> v(1024, 0);
+    if (fd < 0) {
+      // cout << "file open error!" << endl;
     }
-    f.close();
+    while (left_size > 0) {
+      memset(v.data(), 0, 1024);
+      size_t need_read = left_size > 1024 ? 1024 : left_size;
+      int n = co_await detail::co_read(fd, v, need_read);
+      left_size -= n;
+      str += v.data();
+    }
+    // cout << "size=" << size << endl;
+    close(fd);
+    // std::cout << cur_size << endl;
+    co_return;
   }
 
-  context ctx_, works[4];
+  task<> request_per_second() {
+    while (true) {
+      co_await detail::co_timeout(1s);
+      for (auto i = 0uz; i < size(nums); i++) {
+        cout << "thread[" << i << "]: " << nums[i] << endl;
+        nums[i] = 0;
+      }
+    }
+  }
+
+  context ctx_, works[15];
+  unsigned int nums[15]{};
   acceptor actor_;
+  unsigned long long fds = 0;
+  jthread t;
 };
 
 int main() {
-  try {
-    web_server s(8081);
-    s.start();
-  } catch (const exception &e) {
-    std::cout << e.what() << std::endl;
-  }
+
+  web_server s(8081);
+  s.start();
 }

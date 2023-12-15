@@ -1,5 +1,5 @@
 file(GLOB SRC_LIST "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
-add_definitions("-Wall -g")
+# add_definitions("-Wall -g")
 foreach(SRC_FILE ${SRC_LIST})
   get_filename_component(file_name ${SRC_FILE} NAME)
   get_filename_component(file_name_we ${SRC_FILE} NAME_WE)

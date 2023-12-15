@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <iostream>
 #include <liburing.h>
+#include <mutex>
 #include <queue>
 #include <sys/eventfd.h>
 #include <thread>
@@ -19,7 +20,7 @@ class context {
 public:
   context() {
     context_create_count++;
-    io_uring_queue_init(64, &uring, 0);
+    io_uring_queue_init(256, &uring, 0);
     eventfd_ = ::eventfd(0, 0);
   }
 
@@ -83,7 +84,7 @@ public:
       switch (type) {
       case user_data_type::task_info_ptr: {
         auto ti = reinterpret_cast<task_info *>(user_data);
-
+        // std::cout << cqe->res << std::endl;
         ti->res = cqe->res;
         forward_task(ti->handle);
         break;
@@ -105,7 +106,10 @@ private:
   void handle_co_sapwn_event(uintptr_t user_data) {
     // TODO 处理co_spawn事件
     // 将事件添加到队列中
-    local_co_spawn_queue.swap(co_spawn_queue);
+    {
+      std::lock_guard<std::mutex> lock(mtx_);
+      local_co_spawn_queue.swap(co_spawn_queue);
+    }
 
     while (!local_co_spawn_queue.empty()) {
       forward_task(local_co_spawn_queue.front());
@@ -116,7 +120,11 @@ private:
   }
 
   void co_spawn_eventfd(std::coroutine_handle<> h) {
-    co_spawn_queue.emplace(h);
+    {
+      std::lock_guard<std::mutex> lock(mtx_);
+      co_spawn_queue.emplace(h);
+    }
+
     eventfd_write(eventfd_, 1);
   }
 
@@ -137,6 +145,8 @@ private:
   eventfd_t event_buf_{0};
   std::queue<std::coroutine_handle<>> co_spawn_queue;
   std::queue<std::coroutine_handle<>> local_co_spawn_queue;
+
+  std::mutex mtx_;
 };
 
 void co_spawn(task<> t);

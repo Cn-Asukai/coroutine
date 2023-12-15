@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstddef>
 #include <iostream>
 #include <string>
 #include <thread>
@@ -28,7 +29,7 @@ task<> echo(int fd) {
   cout << "url: " << r.url_ << endl;
   cout << "version: " << r.version_ << endl;
   cout << "method: " << r.method_ << endl;
-  for(int i = 0; i < r.header_fields_.size(); i++) {
+  for (std::size_t i = 0; i < r.header_fields_.size(); i++) {
     cout << r.header_fields_[i] << " : " << r.header_values_[i] << endl;
   }
   cout << r.body_ << endl;

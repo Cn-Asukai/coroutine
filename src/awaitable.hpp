@@ -8,11 +8,12 @@
 #include "context.hpp"
 #include "task_info.hpp"
 #include "thread_meta.hpp"
+#include "time_cast.hpp"
 #include "user_data.hpp"
+#include <chrono>
 #include <cstdint>
 #include <liburing.h>
 #include <span>
-
 
 namespace coroutine {
 struct awaitable {
@@ -57,6 +58,36 @@ struct co_send : awaitable {
 
 struct co_close : awaitable {
   explicit co_close(int fd) { io_uring_prep_close(sqe, fd); }
+};
+
+struct co_read : awaitable {
+  explicit co_read(int fd, std::span<char> buf, size_t len) {
+    io_uring_prep_read(sqe, fd, buf.data(), len, 0);
+  }
+};
+
+struct co_timeout_base : awaitable {
+protected:
+  __kernel_timespec ts{};
+
+public:
+  template <typename Rep, typename Period>
+  explicit co_timeout_base(std::chrono::duration<Rep, Period> duration) {
+    set_ts(duration);
+  }
+
+  template <typename Rep, typename Period>
+  void set_ts(std::chrono::duration<Rep, Period> duration) {
+    ts = to_kernel_timespec(duration);
+  }
+};
+
+struct co_timeout : co_timeout_base {
+  template <typename Rep, typename Period>
+  explicit co_timeout(std::chrono::duration<Rep, Period> duration)
+      : co_timeout_base(duration) {
+    io_uring_prep_timeout(sqe, &ts, 0, 0);
+  }
 };
 } // namespace detail
 } // namespace coroutine
